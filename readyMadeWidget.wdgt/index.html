@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Z-table</title>
+    <script src="js/Chart.js"></script>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <style>
+    body{
+    	background-color: white;
+    }
+    
+  	</style>
+  </head>
+  <body>
+
+    <div>
+    	<div class='container'>
+     		<canvas id="z-table"></canvas>
+    	</div>
+    	<input type='button' id='new-chart' value='Show new chart'/>
+    </div>
+
+
+
+  <script type="text/javascript">
+
+  $(function(){
+  	
+  	var data = {
+	    labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+	    datasets: [{
+	        data: [10, 3, 2, 1, 8, 8, 2, 2, 3, 5, 7, 1]
+	    }]
+	};
+
+  	createChart(data);
+  });
+
+  function createChart(data){
+
+	  
+	  var ctx = document.getElementById("z-table").getContext("2d");
+
+	  Chart.types.Line.extend({
+	      name: "LineWithLine",
+	      initialize: function () {
+	          Chart.types.Line.prototype.initialize.apply(this, arguments);
+	      },
+	      draw: function () {
+	          Chart.types.Line.prototype.draw.apply(this, arguments);
+	          
+	          var point = this.datasets[0].points[this.options.lineAtIndex]
+	          var scale = this.scale
+
+	          // draw line
+	          this.chart.ctx.beginPath();
+	          this.chart.ctx.moveTo(point.x, scale.startPoint + 24);
+	          this.chart.ctx.strokeStyle = '#ff0000';
+	          this.chart.ctx.lineTo(point.x, scale.endPoint);
+	          this.chart.ctx.stroke();
+	          
+	          // write TODAY
+	          this.chart.ctx.textAlign = 'center';
+	          this.chart.ctx.fillText("TODAY", point.x, scale.startPoint + 12);
+	      }
+	  });
+
+	  new Chart(ctx).LineWithLine(data, {
+	      datasetFill : false,
+	      lineAtIndex: 2
+	  });
+  	}
+  
+  	function newData(){
+  		var data = {
+	      labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+	      datasets: [{
+	          data: [4, 3, 2, 1, 4, 8, 4, 2, 3, 5, 4, 1]
+	      }]
+	  	};
+
+	  	createChart(data);
+  	}
+
+  	$('#new-chart').on('click', function(){ newData(); });
+
+  	</script>
+  	</body>
+</html>
